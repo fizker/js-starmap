@@ -1,0 +1,17 @@
+{ "name": "starmap"
+, "version": "0.1.0"
+, "description": "A simple JS based star map."
+, "main": "index.js"
+, "scripts":
+  { "test": "mocha"
+  }
+, "keywords":
+  [ "starmap"
+  ]
+, "author": "Benjamin Horsleben"
+, "license": "WTFPL"
+, "dependencies":
+  { "express": "~3.3.1"
+  }
+, "private": true
+}
