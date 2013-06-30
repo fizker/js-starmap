@@ -19,3 +19,24 @@
 
 <script src=dom.js></script>
 <script src=canvas.js></script>
+
+<script>
+	var starmap = new Starmap($$('canvas')[0])
+
+	var initialData = localStorage.getItem('map-data') || '{"stars": [\n\
+{"x": 0, "y": 0, "name": "Sol", "color": "white" },\n\
+{"x": 80, "y": 80, "name": "Alpha Centauri", "color": "blue" },\n\
+{"x": -50, "y": 200, "name": "Augustgrad", "color": "green" }\n\
+]}'
+
+	$$('.js-data-form')
+		.on('submit', function(event) {
+			var form = event.target
+			event.preventDefault()
+			var data = $('[name=data]', form)[0].value
+			localStorage.setItem('map-data', data)
+			starmap.render(JSON.parse(data))
+		})
+		.find('textarea')[0].value = initialData
+	starmap.render(JSON.parse(initialData))
+</script>
