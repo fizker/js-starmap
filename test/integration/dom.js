@@ -24,6 +24,23 @@ describe('integration/dom.js', function() {
 
 	describe('When calling extend method', function() {
 		var list
+		describe('on()', function() {
+			var $result
+			beforeEach(function() {
+				list = $.create('<div></div><div></div>')
+				fzkes.fake(list[0], 'addEventListener')
+				fzkes.fake(list[1], 'addEventListener')
+
+				$result = list.on('click', function() {})
+			})
+			it('should add the specified event', function() {
+				expect(list[0].addEventListener).to.have.been.called
+				expect(list[1].addEventListener).to.have.been.called
+			})
+			it('should return the original list', function() {
+				expect($result).to.equal(list)
+			})
+		})
 		describe('find()', function() {
 			beforeEach(function() {
 				list = $.create('<div class="lvl1"><div class="lvl2 primary"></div></div>\
@@ -35,18 +52,24 @@ describe('integration/dom.js', function() {
 			})
 		})
 		describe('appendTo()', function() {
-			var list
+			var $list
+			var $result
 			var element
 			beforeEach(function() {
 				element = document.createElement('div')
-				$.create('<div></div><div></div>').appendTo(element)
+				$list = $.create('<div></div><div></div>')
+				$result = $list.appendTo(element)
 			})
 			it('should have all elements appended', function() {
 				expect(element.children).to.have.length(2)
 			})
+			it('should return the original list', function() {
+				expect($result).to.equal($list)
+			})
 		})
 		describe('append()', function() {
 			var $elm
+			var $result
 			beforeEach(function() {
 				$elm = $.create('<div></div>')
 			})
@@ -54,28 +77,37 @@ describe('integration/dom.js', function() {
 				var span
 				beforeEach(function() {
 					span = document.createElement('span')
-					$elm.append(span)
+					$result = $elm.append(span)
 				})
 				it('should append that element', function() {
 					expect($elm[0].children[0]).to.equal(span)
+				})
+				it('should return the original element', function() {
+					expect($result).to.equal($elm)
 				})
 			})
 			describe('with an extended list', function() {
 				var $list
 				beforeEach(function() {
 					$list = $.create('<span class="first"></span><span class="second"></span>')
-					$elm.append($list)
+					$result = $elm.append($list)
 				})
 				it('should append all elements', function() {
 					expect($elm[0].children).to.have.length(2)
 				})
+				it('should return the original element', function() {
+					expect($result).to.equal($elm)
+				})
 			})
 			describe('with a string', function() {
 				beforeEach(function() {
-					$elm.append('<span></span>')
+					$result = $elm.append('<span></span>')
 				})
 				it('should evaluate and append the result', function() {
 					expect($elm[0].children).to.have.length(1)
+				})
+				it('should return the original element', function() {
+					expect($result).to.equal($elm)
 				})
 			})
 			describe('on multiple elements', function() {
@@ -85,21 +117,27 @@ describe('integration/dom.js', function() {
 				})
 				describe('with a string', function() {
 					beforeEach(function() {
-						$elms.append('<span></span>')
+						$result = $elms.append('<span></span>')
 					})
 					it('should append to all elements', function() {
 						expect($elms[0].children).to.have.length(1)
 						expect($elms[1].children).to.have.length(1)
 					})
+					it('should return the original element', function() {
+						expect($result).to.equal($elms)
+					})
 				})
 				describe('with existing elements', function() {
 					beforeEach(function() {
 						var elm = $.create('<span></span>')
-						$elms.append(elm)
+						$result = $elms.append(elm)
 					})
 					it('should only append to the first element', function() {
 						expect($elms[0].children).to.have.length(1)
 						expect($elms[1].children).to.have.length(0)
+					})
+					it('should return the original element', function() {
+						expect($result).to.equal($elms)
 					})
 				})
 			})
