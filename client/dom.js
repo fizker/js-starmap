@@ -39,6 +39,8 @@ var $ = (function() {
 			arr._extended = true
 			arr.on = on
 			arr.find = find
+			arr.appendTo = appendTo
+			arr.append = append
 			return arr
 		}
 		return extend(arr)
@@ -51,6 +53,28 @@ var $ = (function() {
 		function on(event, fn) {
 			this.forEach(function(el) {
 				el.addEventListener(event, fn)
+			})
+			return this
+		}
+		function append(elm) {
+			if(Array.isArray(elm)) {
+				elm.forEach(function(el) {
+					this.append(el)
+				}, this)
+				return this
+			}
+			if(typeof(elm) === 'string') {
+				this.forEach(function(parent) {
+					$.create(elm).appendTo(parent)
+				})
+				return this
+			}
+			this[0].appendChild(elm)
+			return this
+		}
+		function appendTo(parent) {
+			this.forEach(function(el) {
+				parent.appendChild(el)
 			})
 			return this
 		}
