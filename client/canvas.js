@@ -1,5 +1,8 @@
 var Starmap = (function() {
 	function ctor(canvas) {
+		if(!(canvas instanceof HTMLCanvasElement)) {
+			throw new TypeError('You must hand a canvas element')
+		}
 		this._canvas = new fabric.StaticCanvas(canvas)
 
 		this._viewport =
