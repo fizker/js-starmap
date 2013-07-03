@@ -28,6 +28,29 @@ var Starmap = (function() {
 			return
 		}
 
+		if(!data.routes) {
+			data.routes = []
+		}
+
+		var stars = data.stars.reduce(function(dict, star) {
+			dict[star.name] = star
+			return dict
+		}, {})
+		data.routes.forEach(function(route) {
+			var from = stars[route.from]
+			var to = stars[route.to]
+			var line = new fabric.Line(
+				  [ from.x - viewport.x
+				  , from.y - viewport.y
+				  , to.x - viewport.x
+				  , to.y - viewport.y
+				  ]
+				, { stroke: route.color || 'white'
+				  }
+				)
+			canvas.add(line)
+		})
+
 		data.stars.forEach(function(star) {
 			var circle = new fabric.Circle({
 				  top: star.y - viewport.y

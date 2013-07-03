@@ -26,6 +26,24 @@ describe('integration/starmap.js', function() {
 				}).not.to.throw()
 			})
 		})
+		describe('with two stars', function() {
+			it('should not throw', function() {
+				expect(function() {
+					starmap.render(
+						{ stars:
+						  [ { x: 1
+						    , y: 1
+						    , name: 'a'
+						    }
+						  , { x: 2
+						    , y: 2
+						    , name: 'b'
+						    }
+						  ]
+						})
+				}).not.to.throw()
+			})
+		})
 	})
 	describe('When creating a starmap', function() {
 		describe('with a `canvas` element', function() {
