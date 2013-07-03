@@ -24,10 +24,12 @@ describe('integration/dom.js', function() {
 
 	describe('When calling extend method', function() {
 		var list
+		beforeEach(function() {
+			list = $.create('<div></div><div></div>')
+		})
 		describe('on()', function() {
 			var $result
 			beforeEach(function() {
-				list = $.create('<div></div><div></div>')
 				fzkes.fake(list[0], 'addEventListener')
 				fzkes.fake(list[1], 'addEventListener')
 
@@ -41,6 +43,73 @@ describe('integration/dom.js', function() {
 				expect($result).to.equal(list)
 			})
 		})
+		describe('off()', function() {
+			var $result
+			var handlers
+			beforeEach(function() {
+				handlers = { first: function() {}, second: function() {} }
+				fzkes.fake(list[0], 'removeEventListener')
+				fzkes.fake(list[1], 'removeEventListener')
+				list
+					.on('click', handlers.first)
+					.on('click', handlers.second)
+			})
+			describe('with event and function', function() {
+				beforeEach(function() {
+					$result = list.off('click', handlers.first)
+				})
+				it('removes that handler', function() {
+					list.forEach(function(el) {
+						expect(el.removeEventListener)
+							.to.have.been.calledWith('click', handlers.first)
+					})
+				})
+				it('does not remove the other handler', function() {
+					list.forEach(function(el) {
+						expect(el.removeEventListener)
+							.not.to.have.been.calledWith('click', handlers.second)
+					})
+				})
+				it('returns the list itself', function() {
+					expect($result).to.equal(list)
+				})
+			})
+		})
+		describe('once()', function() {
+			var $result
+			var handler
+			beforeEach(function() {
+				handler = fzkes.fake('handler')
+				list.forEach(function(el) {
+					fzkes.fake(el, 'addEventListener')
+					fzkes.fake(el, 'removeEventListener')
+				})
+				$result = list.once('click', handler)
+			})
+			it('should add the listener', function() {
+				list.forEach(function(el) {
+					expect(el.addEventListener)
+						.to.have.been.calledWith('click')
+				})
+			})
+			it('should remove the listener from all elements when it gets called', function() {
+				var handler = list[0].addEventListener._calls[0][1]
+				list[0].addEventListener.callsArg({ now: true })
+				list.forEach(function(el) {
+					expect(el.removeEventListener)
+						.to.have.been.calledWith('click', handler)
+				})
+			})
+			it('should call the handler', function() {
+				var event = {}
+				list[0].addEventListener.callsArg({ now: true, arguments: [ event ] })
+				expect(handler).to.have.been.calledWithExactly(event)
+			})
+			it('should return the list', function() {
+				expect($result).to.equal(list)
+			})
+		})
+
 		describe('find()', function() {
 			beforeEach(function() {
 				list = $.create('<div class="lvl1"><div class="lvl2 primary"></div></div>\
@@ -51,6 +120,7 @@ describe('integration/dom.js', function() {
 				expect(list).to.have.length(1)
 			})
 		})
+
 		describe('appendTo()', function() {
 			var $list
 			var $result

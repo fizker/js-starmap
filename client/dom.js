@@ -38,6 +38,8 @@ var $ = (function() {
 			}
 			arr._extended = true
 			arr.on = on
+			arr.off = off
+			arr.once = once
 			arr.find = find
 			arr.appendTo = appendTo
 			arr.append = append
@@ -50,12 +52,33 @@ var $ = (function() {
 				return $(sel, el)
 			}))
 		}
+
 		function on(event, fn) {
 			this.forEach(function(el) {
 				el.addEventListener(event, fn)
 			})
 			return this
 		}
+		function off(event, fn) {
+			this.forEach(function(el) {
+				el.removeEventListener(event, fn)
+			})
+			return this
+		}
+		function once(event, fn) {
+			var list = this
+			function wrapper() {
+				list.forEach(function(el) {
+					el.removeEventListener(event, wrapper)
+				})
+				fn.apply(this, arguments)
+			}
+			this.forEach(function(el) {
+				el.addEventListener(event, wrapper)
+			})
+			return this
+		}
+
 		function append(elm) {
 			if(Array.isArray(elm)) {
 				elm.forEach(function(el) {
