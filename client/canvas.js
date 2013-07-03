@@ -11,6 +11,27 @@ var Starmap = (function() {
 		, h: canvas.height
 		, w: canvas.width
 		}
+
+		var viewport = this._viewport
+		// drag handling
+		$(canvas)
+			.on('mousedown', function(event) {
+				var move = { x: event.x, y: event.y }
+				var drag = function drag(event) {
+					var dx = move.x - event.x
+					var dy = move.y - event.y
+					move.x = event.x
+					move.y = event.y
+					viewport.x += dx
+					viewport.y += dy
+					this.render(this.lastData)
+				}.bind(this)
+				$(window)
+					.on('mousemove', drag)
+					.once('mouseup', function() {
+						$(window).off('mousemove', drag)
+					})
+			}.bind(this))
 	}
 
 	ctor.prototype =
@@ -24,6 +45,7 @@ var Starmap = (function() {
 		var canvas = this._canvas
 		canvas.clear()
 
+		this.lastData = data
 		if(!data) {
 			return
 		}
