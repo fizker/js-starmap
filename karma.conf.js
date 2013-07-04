@@ -11,13 +11,13 @@ files =
 , 'node_modules/fzkes/browser.js'
 , 'node_modules/chai/chai.js'
 , 'test/common.js'
-, 'lib/**/*.js'
-, 'client/**/*.js'
+, '*.js'
 , 'test/**/*.js'
 ]
 
 // list of files to exclude
 exclude = [
+  'karma.conf.js'
 ]
 
 // test results reporter to use
