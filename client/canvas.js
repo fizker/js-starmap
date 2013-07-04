@@ -15,23 +15,38 @@ var Starmap = (function() {
 		var viewport = this._viewport
 		// drag handling
 		$(canvas)
+			.on('touchstart', function(event) {
+				var drag = getDragHandler(this, event)
+				$(window)
+					.on('touchmove', drag)
+					.once('touchend', function() {
+						$(window).off('touchmove', drag)
+					})
+			}.bind(this))
 			.on('mousedown', function(event) {
-				var move = { x: event.x, y: event.y }
-				var drag = function drag(event) {
-					var dx = move.x - event.x
-					var dy = move.y - event.y
-					move.x = event.x
-					move.y = event.y
-					viewport.x += dx
-					viewport.y += dy
-					this.render(this.lastData)
-				}.bind(this)
+				var drag = getDragHandler(this, event)
 				$(window)
 					.on('mousemove', drag)
 					.once('mouseup', function() {
 						$(window).off('mousemove', drag)
 					})
 			}.bind(this))
+
+		function getDragHandler(map, event) {
+			event.preventDefault()
+			var move = { x: event.pageX, y: event.pageY }
+			function drag(event) {
+				event.preventDefault()
+				var dx = move.x - event.pageX
+				var dy = move.y - event.pageY
+				move.x = event.pageX
+				move.y = event.pageY
+				viewport.x += dx
+				viewport.y += dy
+				map.render(map.lastData)
+			}
+			return drag
+		}
 	}
 
 	ctor.prototype =
